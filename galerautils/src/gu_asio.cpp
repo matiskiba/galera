@@ -4,7 +4,9 @@
 
 #include "gu_config.hpp"
 #include "gu_asio.hpp"
+#include <openssl/comp.h>
 
+#define COMP_ZLIB	2
 
 void gu::ssl_register_params(gu::Config& conf)
 {
@@ -24,7 +26,6 @@ static bool ssl_check_conf(const gu::Config& conf)
     using namespace gu;
 
     bool explicit_ssl(false);
-
     if (conf.is_set(conf::use_ssl))
     {
         if  (conf.get<bool>(conf::use_ssl) == false)
@@ -57,7 +58,6 @@ static bool ssl_check_conf(const gu::Config& conf)
 void gu::ssl_init_options(gu::Config& conf)
 {
     bool use_ssl(ssl_check_conf(conf));
-
     if (use_ssl == true)
     {
         // set defaults
@@ -131,7 +131,6 @@ void gu::ssl_prepare_context(const gu::Config& conf, asio::ssl::context& ctx,
         boost::bind(&SSLPasswordCallback::get_password, &cb));
 
     std::string param;
-
     try
     {
         param = conf::ssl_key;
@@ -142,9 +141,26 @@ void gu::ssl_prepare_context(const gu::Config& conf, asio::ssl::context& ctx,
         ctx.load_verify_file(conf.get(param, conf.get(conf::ssl_cert)));
         param = conf::ssl_cipher;
         SSL_CTX_set_cipher_list(ctx.impl(), conf.get(param).c_str());
+    
 	bool compression(conf.get(conf::ssl_compression, true));
         if (compression)
+	{
+	   log_info << "enabling SSL compression";
 	   ctx.clear_options(asio::ssl::context::no_compression);
+
+  	   COMP_METHOD *comp_method;
+           comp_method = COMP_zlib();
+
+           if(comp_method != NULL)
+           {
+                log_info << "compression name: " << (comp_method->name != NULL? comp_method->name:"");
+                if (comp_method->type != NID_undef)
+                        SSL_COMP_add_compression_method(COMP_ZLIB, comp_method);
+                else
+                        log_info << "enabling SSL compression failed";
+           }
+
+	}
 
     }
     catch (asio::system_error& ec)
