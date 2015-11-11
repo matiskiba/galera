@@ -93,6 +93,7 @@ public:
   BOOST_STATIC_CONSTANT(long, no_sslv2 = SSL_OP_NO_SSLv2);
   BOOST_STATIC_CONSTANT(long, no_sslv3 = SSL_OP_NO_SSLv3);
   BOOST_STATIC_CONSTANT(long, no_tlsv1 = SSL_OP_NO_TLSv1);
+  BOOST_STATIC_CONSTANT(long, no_compression = SSL_OP_NO_COMPRESSION);
 #endif
 
   /// File format types.

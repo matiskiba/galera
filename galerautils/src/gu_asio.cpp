@@ -142,6 +142,10 @@ void gu::ssl_prepare_context(const gu::Config& conf, asio::ssl::context& ctx,
         ctx.load_verify_file(conf.get(param, conf.get(conf::ssl_cert)));
         param = conf::ssl_cipher;
         SSL_CTX_set_cipher_list(ctx.impl(), conf.get(param).c_str());
+	bool compression(conf.get(conf::ssl_compression, true));
+        if (compression)
+	   ctx.clear_options(asio::ssl::context::no_compression);
+
     }
     catch (asio::system_error& ec)
     {

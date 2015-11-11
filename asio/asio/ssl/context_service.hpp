@@ -84,6 +84,13 @@ public:
     service_impl_.destroy(impl);
   }
 
+  /// Clear options on the context.
+  asio::error_code clear_options(impl_type& impl,
+      context_base::options o, asio::error_code& ec)
+  {
+    return service_impl_.clear_options(impl, o, ec);
+  }
+
   /// Set options on the context.
   asio::error_code set_options(impl_type& impl,
       context_base::options o, asio::error_code& ec)

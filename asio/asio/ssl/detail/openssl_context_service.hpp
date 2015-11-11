@@ -128,6 +128,16 @@ public:
     }
   }
 
+  // Clear options on the context.
+  asio::error_code clear_options(impl_type& impl,
+      context_base::options o, asio::error_code& ec)
+  {
+    ::SSL_CTX_clear_options(impl, o);
+
+    ec = asio::error_code();
+    return ec;
+  }
+
   // Set options on the context.
   asio::error_code set_options(impl_type& impl,
       context_base::options o, asio::error_code& ec)

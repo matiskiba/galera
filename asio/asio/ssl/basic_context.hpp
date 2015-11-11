@@ -67,6 +67,23 @@ public:
     return impl_;
   }
 
+  /// Clear options on the context.
+  /**
+   * This function may be used to configure the SSL options used by the context.
+   *
+   * @param o A bitmask of options. The available option values are defined in
+   * the context_base class. The options are bitwise-ored with any existing
+   * value for the options.
+   *
+   * @throws asio::system_error Thrown on failure.
+   */
+  void clear_options(options o)
+  {
+    asio::error_code ec;
+    service_.clear_options(impl_, o, ec);
+    asio::detail::throw_error(ec);
+  }
+
   /// Set options on the context.
   /**
    * This function may be used to configure the SSL options used by the context.
