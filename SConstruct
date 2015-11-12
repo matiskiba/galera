@@ -173,7 +173,7 @@ if sysname == 'freebsd' or sysname == 'sunos':
     env.Append(CPPFLAGS = ' -I/usr/local/include ')
 if sysname == 'sunos':
    env.Replace(SHLINKFLAGS = '-shared ')
-
+#env.Append(CPPFLAGS = ' -I/home/ravmesser/openssl-1.0.2d/include ')
 # Add paths is extra_sysroot argument was specified
 extra_sysroot = ARGUMENTS.get('extra_sysroot', '')
 if sysname == 'darwin' and extra_sysroot == '':
@@ -386,6 +386,8 @@ if ssl == 1:
         Exit(1)
     if conf.CheckLib('ssl'):
         conf.CheckLib('crypto')
+	conf.CheckLib('dl')
+	conf.CheckLib('z')
     else:
         print 'ssl support required but openssl library not found'
         print 'compile with ssl=0 or check that openssl library is usable'
